@@ -45,37 +45,34 @@ internal class Program
 			new Triangle( 0.0f, 0.0f, 0.0f,    1.0f, 1.0f, 0.0f,    0.0f, 1.0f, 0.0f )
 		];
 
-		//Triangle[] tris = [
-		//    new Triangle(
-		//        0.0f,   1.0f,   0.0f,
-		//        -1.0f,  -1.0f,  0.0f,
-		//        1.0f,   -1.0f,  0.0f
-		//    )
-		//];
-
-		Triangle[] tris1 = [
+		Triangle[] tris = [
 			new Triangle(
 				0.5f,   1.0f,   0.0f,
 				0.0f,   0.0f,   0.0f,
 				1.0f,   0.0f,  0.0f
 			)
 		];
+
+		PlayerEntity player = new PlayerEntity(new Vector3(0.0f, 0.0f, 0.0f), 10.0f, 0.0f, tris);
 		
-		Triangle[] tris2 = [
-			new Triangle(
-				0.5f,   1.0f,   0.0f,
-				0.0f,   0.0f,   0.0f,
-				1.0f,   0.0f,  0.0f
-			)
-		];
-
-		//float cubeXDir = 1.0f;
-		//float cubeYDir = 1.0f;
-		PlayerEntity player = new PlayerEntity(new Vector3(0.0f, 0.0f, 0.0f), 10.0f, 0.0f, tris1);
-		Entity box = new Entity(new Vector3(10.0f, 10.0f, 0.0f), 14.0f, 0.0f, boxTris);
-
-		float rotationAngle = 5.0f;
-
+		var boxesLength = 1000;
+		Entity[] boxes = new Entity[boxesLength];
+		Random rand = new Random();
+		for (int i = 0; i < boxesLength; i ++)
+		{
+			boxes[i] = new Entity(
+				new Vector3(
+					rand.Next(-(int)WORLD_SIZE, (int)WORLD_SIZE),
+					rand.Next(-(int)WORLD_SIZE, (int)WORLD_SIZE),
+					0.0f
+				),
+				rand.Next(4, 24),
+				0.0f,
+				boxTris.Select(x => new Triangle(x)).ToArray()
+			);
+			boxes[i].Rotation = rand.Next(1, 3) == 1 ? -2.0f : 2.0f;
+		}
+		
 		while (!Raylib.WindowShouldClose())
 		{
 			Raylib.BeginDrawing();
@@ -86,9 +83,9 @@ internal class Program
 			Raylib.DrawText($"Camera Zoom: {Camera.CAMERA_ZOOM:0.00}", ToScreenSpaceX(-0.99f), ToScreenSpaceY(0.90f), 16, Color.White);
 			// Raylib.DrawText($"FOV: {WINDOW_FOV}", ToScreenSpaceX(-0.99f), ToScreenSpaceY(0.90f), 16, Color.White);
 
-			float fovRad = AngleToRad(WINDOW_FOV);
-			Z_NEAR = 1 / (float)Math.Tan(fovRad / 2);
-			Z_FAR = Z_NEAR * 10;
+			// float fovRad = AngleToRad(WINDOW_FOV);
+			// Z_NEAR = 1 / (float)Math.Tan(fovRad / 2);
+			// Z_FAR = Z_NEAR * 10;
 
 			//Update Coordinates
 			//cube.PositionX += 0.02f * cubeXDir;
@@ -100,11 +97,15 @@ internal class Program
 			//else if (cube.PositionY <= -1.0f && cubeYDir == -1.0f) cubeYDir = 1.0f;
 
 			player.Draw();
-			box.Draw();
 
-			//Rotate Cube
-			player.Rotate(-2.0f);
-			box.Rotate(1.0f);
+			//Rotate
+			// player.Rotate(-2.0f);
+
+			for (int i = 0; i < boxes.Length; i ++)
+			{
+				boxes[i].Draw();
+				boxes[i].Rotate();
+			}
 
 			Raylib.EndDrawing();
 		}

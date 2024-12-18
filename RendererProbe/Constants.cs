@@ -2,8 +2,8 @@
 
 internal static class Constants
 {
-    public const int WINDOW_WIDTH = 720;
-    public const int WINDOW_HEIGHT = 720;
+    public const int WINDOW_WIDTH = 1024;
+    public const int WINDOW_HEIGHT = 1024;
     public const int WINDOW_WIDTH_HALF = WINDOW_WIDTH / 2;
     public const int WINDOW_HEIGHT_HALF = WINDOW_HEIGHT / 2;
     public static int WINDOW_FOV = 60;
@@ -11,5 +11,5 @@ internal static class Constants
     public static float Z_NEAR = 1.0f;
     public static float Z_FAR = 10.0f;
     public static bool PERSPECTIVE = false;
-    public const float WORLD_SIZE = 100.0f;
+    public const float WORLD_SIZE = 1000.0f;
 }

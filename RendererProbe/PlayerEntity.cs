@@ -18,7 +18,7 @@ public class PlayerEntity : Entity
 
 	public void HandleInput()
 	{
-		float movement = 2.0f;
+		float movement = 4.0f;
 		
 		if (Raylib.IsKeyDown(KeyboardKey.W))
 		{

@@ -121,10 +121,6 @@ public struct Mesh
 		{
 			Triangle triangle = new Triangle(Triangles[i]);
 
-			//Calculate Middle
-			// float xMid = (triangle.Vertices[0].X + triangle.Vertices[1].X + triangle.Vertices[2].X) / 3.0f;
-			// float yMid = (triangle.Vertices[0].Y + triangle.Vertices[1].Y + triangle.Vertices[2].Y) / 3.0f;
-
 			for (int j = 0; j < 3; j++)
 			{
 				float x = triangle.Vertices[j].X;
@@ -141,7 +137,7 @@ public struct Mesh
 				//Camera Zoom
 				x /= Camera.CAMERA_ZOOM;
 				y /= Camera.CAMERA_ZOOM;
-
+				
 				//Set Final
 				triangle.Vertices[j].X = x;
 				triangle.Vertices[j].Y = y;
@@ -164,43 +160,3 @@ public struct Mesh
 		}
 	}
 }
-
-
-//Raylib.DrawLineEx(
-//    Graphics.ToScreenSpaceVec2(new Vector2(
-//        (triangle.Vertices[0].X + triangle.Vertices[1].X) / 2.0f,
-//        (triangle.Vertices[0].Y + triangle.Vertices[1].Y) / 2.0f
-//    )),
-//    Graphics.ToScreenSpaceVec2(new Vector2(
-//        xMid,
-//        yMid
-//    )),
-//    1.0f,
-//    Color.White
-//);
-
-//Raylib.DrawLineEx(
-//    Graphics.ToScreenSpaceVec2(new Vector2(
-//        (triangle.Vertices[1].X + triangle.Vertices[2].X) / 2.0f,
-//        (triangle.Vertices[1].Y + triangle.Vertices[2].Y) / 2.0f
-//    )),
-//    Graphics.ToScreenSpaceVec2(new Vector2(
-//        xMid,
-//        yMid
-//    )),
-//    1.0f,
-//    Color.White
-//);
-
-//Raylib.DrawLineEx(
-//    Graphics.ToScreenSpaceVec2(new Vector2(
-//        (triangle.Vertices[2].X + triangle.Vertices[0].X) / 2.0f,
-//        (triangle.Vertices[2].Y + triangle.Vertices[0].Y) / 2.0f
-//    )),
-//    Graphics.ToScreenSpaceVec2(new Vector2(
-//        xMid,
-//        yMid
-//    )),
-//    1.0f,
-//    Color.White
-//);

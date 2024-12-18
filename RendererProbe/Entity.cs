@@ -9,6 +9,7 @@ public class Entity
 	public float PositionZ { get; set; }
 
 	public float ScaleFactor { get; set; }
+	public float Rotation { get; set; }
 	private float _angle;
 	public float Angle { 
 		get { return _angle; } 
@@ -30,7 +31,6 @@ public class Entity
 		Angle = angle;
 		Mesh = new Mesh { Triangles = triangles };
 		Scale();
-		Rotate(Angle);
 	}
 
 	public void Draw()
@@ -38,29 +38,11 @@ public class Entity
 		Mesh.DrawMesh(new Vector3(PositionX, PositionY, PositionZ));
 	}
 
-	public void NormalizeCoordinates()
-	{
-		for (int i = 0; i < Mesh.Triangles.Length; i++)
-		{
-			for (int j = 0; j < 3; j++)
-			{
-				Vector3 vec3 = Mesh.Triangles[i].Vertices[j];
-			}
-		}
-	}
-
-	public void UpdateCoordinates(float posX, float posY, float posZ)
-	{
-		PositionX = posX;
-		PositionY = posY;
-		PositionZ = posZ;
-	}
-
-	public void Rotate(float angle)
+	public void Rotate(float? angle = null)
 	{   
-		Angle += angle;
+		Angle += angle ?? Rotation;
 
-		float angleRad = Graphics.AngleToRad(angle);
+		float angleRad = Graphics.AngleToRad(angle ?? Rotation);
 
 		for (int i = 0; i < Mesh.Triangles.Length; i++)
 		{
