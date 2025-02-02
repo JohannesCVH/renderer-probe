@@ -1,6 +1,6 @@
 ﻿namespace RendererProbe;
 
-internal static class Constants
+internal static class Globals
 {
     public const int WINDOW_WIDTH = 1024;
     public const int WINDOW_HEIGHT = 1024;
@@ -12,4 +12,6 @@ internal static class Constants
     public static float Z_FAR = 10.0f;
     public static bool PERSPECTIVE = false;
     public const float WORLD_SIZE = 1000.0f;
+    public static bool ENABLE_ROTATION = false;
+    public static DateTime SETTING_CHANGE_LAST_UPDATED = DateTime.Now;
 }

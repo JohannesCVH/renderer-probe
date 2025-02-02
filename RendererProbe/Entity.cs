@@ -38,7 +38,7 @@ public class Entity
 		Mesh.DrawMesh(new Vector3(PositionX, PositionY, PositionZ));
 	}
 
-	public void Rotate(float? angle = null)
+	public void RotateRoll(float? angle = null)
 	{   
 		Angle += angle ?? Rotation;
 
@@ -54,10 +54,61 @@ public class Entity
 
 				float x2 = x * (float)Math.Cos(angleRad) - (y * (float)Math.Sin(angleRad));
 				float y2 = x * (float)Math.Sin(angleRad) + (y * (float)Math.Cos(angleRad));
+				float z2 = z;
 
 				Mesh.Triangles[i].Vertices[j].X = x2;
 				Mesh.Triangles[i].Vertices[j].Y = y2;
-				Mesh.Triangles[i].Vertices[j].Z = z;
+				Mesh.Triangles[i].Vertices[j].Z = z2;
+			}
+		}
+	}
+
+	public void RotateYaw(float? angle = null)
+	{   
+		Angle += angle ?? Rotation;
+
+		float angleRad = Graphics.AngleToRad(angle ?? Rotation);
+
+		for (int i = 0; i < Mesh.Triangles.Length; i++)
+		{
+			for (int j = 0; j < Mesh.Triangles[i].Vertices.Length; j++)
+			{
+				float x = Mesh.Triangles[i].Vertices[j].X;
+				float y = Mesh.Triangles[i].Vertices[j].Y;
+				float z = Mesh.Triangles[i].Vertices[j].Z;
+
+				float x2 = (x * (float)Math.Cos(angleRad)) + (z * (float)Math.Sin(angleRad));
+				float y2 = y;
+				float z2 = (-x * (float)Math.Sin(angleRad)) + (z * (float)Math.Cos(angleRad));
+
+				Mesh.Triangles[i].Vertices[j].X = x2;
+				Mesh.Triangles[i].Vertices[j].Y = y2;
+				Mesh.Triangles[i].Vertices[j].Z = z2;
+			}
+		}
+	}
+
+	public void RotatePitch(float? angle = null)
+	{   
+		Angle += angle ?? Rotation;
+
+		float angleRad = Graphics.AngleToRad(angle ?? Rotation);
+
+		for (int i = 0; i < Mesh.Triangles.Length; i++)
+		{
+			for (int j = 0; j < Mesh.Triangles[i].Vertices.Length; j++)
+			{
+				float x = Mesh.Triangles[i].Vertices[j].X;
+				float y = Mesh.Triangles[i].Vertices[j].Y;
+				float z = Mesh.Triangles[i].Vertices[j].Z;
+
+				float x2 = x;
+				float y2 = (y * (float)Math.Cos(angleRad)) - (z * (float)Math.Sin(angleRad));
+				float z2 = (y * (float)Math.Sin(angleRad)) + (z * (float)Math.Cos(angleRad));
+
+				Mesh.Triangles[i].Vertices[j].X = x2;
+				Mesh.Triangles[i].Vertices[j].Y = y2;
+				Mesh.Triangles[i].Vertices[j].Z = z2;
 			}
 		}
 	}
@@ -68,9 +119,9 @@ public class Entity
 		{
 			for (int j = 0; j < Mesh.Triangles[i].Vertices.Length; j++)
 			{
-				Mesh.Triangles[i].Vertices[j].X *= ScaleFactor / Constants.WORLD_SIZE;
-				Mesh.Triangles[i].Vertices[j].Y *= ScaleFactor / Constants.WORLD_SIZE;
-				Mesh.Triangles[i].Vertices[j].Z *= ScaleFactor / Constants.WORLD_SIZE;
+				Mesh.Triangles[i].Vertices[j].X *= ScaleFactor / Globals.WORLD_SIZE;
+				Mesh.Triangles[i].Vertices[j].Y *= ScaleFactor / Globals.WORLD_SIZE;
+				Mesh.Triangles[i].Vertices[j].Z *= ScaleFactor / Globals.WORLD_SIZE;
 			}
 		}
 	}

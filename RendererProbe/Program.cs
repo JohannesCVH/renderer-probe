@@ -1,6 +1,6 @@
 ﻿using Raylib_cs;
 using System.Numerics;
-using static RendererProbe.Constants;
+using static RendererProbe.Globals;
 using static RendererProbe.Graphics;
 
 namespace RendererProbe;
@@ -11,6 +11,11 @@ internal class Program
 	{
 		Raylib.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Renderer");
 		Raylib.SetTargetFPS(30);
+
+		// string filePath = Path.Combine(
+		// 	Environment.CurrentDirectory,
+		// 	"Assets/Asteroid.obj"
+		// );
 
 		Triangle[] cubeTris =
 		[
@@ -39,39 +44,16 @@ internal class Program
 			new Triangle( 1.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f )
 		];
 
-		Triangle[] boxTris =
-		[
-			new Triangle( 0.0f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f,    1.0f, 1.0f, 0.0f ),
-			new Triangle( 0.0f, 0.0f, 0.0f,    1.0f, 1.0f, 0.0f,    0.0f, 1.0f, 0.0f )
-		];
+		PlayerEntity player = new PlayerEntity(new Vector3(0.0f, 0.0f, 0.0f), 10.0f, 0.0f, []);
 
-		Triangle[] tris = [
-			new Triangle(
-				0.5f,   1.0f,   0.0f,
-				0.0f,   0.0f,   0.0f,
-				1.0f,   0.0f,  0.0f
-			)
-		];
-
-		PlayerEntity player = new PlayerEntity(new Vector3(0.0f, 0.0f, 0.0f), 10.0f, 0.0f, tris);
+		Entity box = new Entity(
+			new Vector3(0.0f, 0.0f, 0.0f),
+			30,
+			0.0f,
+			cubeTris.Select(x => new Triangle(x)).ToArray()
+		);
+		box.Rotation = 1.0f;
 		
-		var boxesLength = 1000;
-		Entity[] boxes = new Entity[boxesLength];
-		Random rand = new Random();
-		for (int i = 0; i < boxesLength; i ++)
-		{
-			boxes[i] = new Entity(
-				new Vector3(
-					rand.Next(-(int)WORLD_SIZE, (int)WORLD_SIZE),
-					rand.Next(-(int)WORLD_SIZE, (int)WORLD_SIZE),
-					0.0f
-				),
-				rand.Next(4, 24),
-				0.0f,
-				boxTris.Select(x => new Triangle(x)).ToArray()
-			);
-			boxes[i].Rotation = rand.Next(1, 3) == 1 ? -2.0f : 2.0f;
-		}
 		
 		while (!Raylib.WindowShouldClose())
 		{
@@ -101,10 +83,12 @@ internal class Program
 			//Rotate
 			// player.Rotate(-2.0f);
 
-			for (int i = 0; i < boxes.Length; i ++)
+			box.Draw();
+			if (ENABLE_ROTATION)
 			{
-				boxes[i].Draw();
-				boxes[i].Rotate();
+				box.RotateRoll();
+				box.RotateYaw();
+				box.RotatePitch();
 			}
 
 			Raylib.EndDrawing();
@@ -176,6 +160,13 @@ internal class Program
 		{
 			if (Camera.CAMERA_ZOOM < 1.0f)
 				Camera.CAMERA_ZOOM += 0.05f;
+		}
+
+		//Rotate
+		if (Raylib.IsKeyDown(KeyboardKey.R) && DateTime.Now.Subtract(SETTING_CHANGE_LAST_UPDATED).Milliseconds > 100)
+		{
+			ENABLE_ROTATION = ENABLE_ROTATION ? false : true;
+			SETTING_CHANGE_LAST_UPDATED = DateTime.Now;
 		}
 	}
 }

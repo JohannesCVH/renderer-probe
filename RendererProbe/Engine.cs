@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using static RendererProbe.Constants;
+using static RendererProbe.Globals;
 
 namespace RendererProbe;
 

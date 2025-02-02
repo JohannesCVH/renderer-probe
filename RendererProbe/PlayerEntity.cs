@@ -22,22 +22,22 @@ public class PlayerEntity : Entity
 		
 		if (Raylib.IsKeyDown(KeyboardKey.W))
 		{
-			if (PositionY <= Constants.WORLD_SIZE)
+			if (PositionY <= Globals.WORLD_SIZE)
 				PositionY += movement;
 		}
 		if (Raylib.IsKeyDown(KeyboardKey.S))
 		{
-			if (PositionY >= -Constants.WORLD_SIZE)
+			if (PositionY >= -Globals.WORLD_SIZE)
 				PositionY -= movement;
 		}
 		if (Raylib.IsKeyDown(KeyboardKey.D))
 		{
-			if (PositionX <= Constants.WORLD_SIZE)
+			if (PositionX <= Globals.WORLD_SIZE)
 				PositionX += movement;
 		}
 		if (Raylib.IsKeyDown(KeyboardKey.A))
 		{
-			if (PositionX >= -Constants.WORLD_SIZE)
+			if (PositionX >= -Globals.WORLD_SIZE)
 				PositionX -= movement;
 		}
 		

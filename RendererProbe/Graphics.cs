@@ -1,6 +1,6 @@
 ﻿using Raylib_cs;
 using System.Numerics;
-using static RendererProbe.Constants;
+using static RendererProbe.Globals;
 
 namespace RendererProbe;
 
@@ -79,11 +79,40 @@ public static class Graphics
 		
 		return pos;
 	}
+
+	public static Vector3 CalculateNormal(Triangle triangle)
+	{
+		Vector3 normal, line1, line2;
+
+		line1.X = triangle.Vertices[1].X - triangle.Vertices[0].X;
+		line1.Y = triangle.Vertices[1].Y - triangle.Vertices[0].Y;
+		line1.Z = triangle.Vertices[1].Z - triangle.Vertices[0].Z;
+
+		line2.X = triangle.Vertices[2].X - triangle.Vertices[0].X;
+		line2.Y = triangle.Vertices[2].Y - triangle.Vertices[0].Y;
+		line2.Z = triangle.Vertices[2].Z - triangle.Vertices[0].Z;
+
+		normal.X = (line1.Y * line2.Z) - (line1.Z * line2.Y);
+		normal.Y = (line1.Z * line2.X) - (line1.X * line2.Z);
+		normal.Z = (line1.X * line2.Y) - (line1.Y * line2.X);
+
+		float normalL = (float)Math.Sqrt((normal.X * normal.X) + (normal.Y * normal.Y) + (normal.Z * normal.Z));
+		normal.X /= normalL;
+		normal.Y /= normalL;
+		normal.Z /= normalL;
+
+		return normal;
+	}
 }
 
 public struct Triangle
 {
 	public Vector3[] Vertices;
+
+	public Triangle()
+	{
+		Vertices = new Vector3[3];
+	}
 
 	public Triangle(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3)
 	{
@@ -147,16 +176,28 @@ public struct Mesh
 				//triangle.Vertices[j] = Graphics.Vector3ToPerspective(triangle.Vertices[j]);
 			}
 
+			//To Screen Space
 			triangle.Vertices[0] = Graphics.ToScreenSpaceVec3(triangle.Vertices[0]);
 			triangle.Vertices[1] = Graphics.ToScreenSpaceVec3(triangle.Vertices[1]);
 			triangle.Vertices[2] = Graphics.ToScreenSpaceVec3(triangle.Vertices[2]);
 
-			Raylib.DrawTriangleLines(
-				new Vector2(triangle.Vertices[0].X, triangle.Vertices[0].Y),
-				new Vector2(triangle.Vertices[1].X, triangle.Vertices[1].Y),
-				new Vector2(triangle.Vertices[2].X, triangle.Vertices[2].Y),
-				Color.White
-			);
+			//Only draw polygon 
+			if (Graphics.CalculateNormal(triangle).Z < 0)
+			{
+				Raylib.DrawTriangleLines(
+					new Vector2(triangle.Vertices[0].X, triangle.Vertices[0].Y),
+					new Vector2(triangle.Vertices[1].X, triangle.Vertices[1].Y),
+					new Vector2(triangle.Vertices[2].X, triangle.Vertices[2].Y),
+					Color.White
+				);
+			}
+
+			// Raylib.DrawTriangle(
+			// 	new Vector2(triangle.Vertices[0].X, triangle.Vertices[0].Y),
+			// 	new Vector2(triangle.Vertices[1].X, triangle.Vertices[1].Y),
+			// 	new Vector2(triangle.Vertices[2].X, triangle.Vertices[2].Y),
+			// 	Color.White
+			// );
 		}
 	}
 }
