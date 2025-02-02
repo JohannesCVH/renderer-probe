@@ -12,10 +12,13 @@ internal class Program
 		Raylib.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello Renderer");
 		Raylib.SetTargetFPS(30);
 
-		// string filePath = Path.Combine(
-		// 	Environment.CurrentDirectory,
-		// 	"Assets/Asteroid.obj"
-		// );
+		string filePath = Path.Combine(
+			Environment.CurrentDirectory,
+			"Assets/teapot.obj"
+		);
+
+		ObjReader objReader = new ObjReader(filePath);
+		Triangle[] teapotMesh = objReader.Triangles.ToArray();
 
 		Triangle[] cubeTris =
 		[
@@ -50,7 +53,7 @@ internal class Program
 			new Vector3(0.0f, 0.0f, 0.0f),
 			30,
 			0.0f,
-			cubeTris.Select(x => new Triangle(x)).ToArray()
+			teapotMesh.Select(x => new Triangle(x)).ToArray()
 		);
 		box.Rotation = 1.0f;
 		
@@ -163,7 +166,7 @@ internal class Program
 		}
 
 		//Rotate
-		if (Raylib.IsKeyDown(KeyboardKey.R) && DateTime.Now.Subtract(SETTING_CHANGE_LAST_UPDATED).Milliseconds > 100)
+		if (Raylib.IsKeyDown(KeyboardKey.R) && DateTime.Now.Subtract(SETTING_CHANGE_LAST_UPDATED).Milliseconds > 300)
 		{
 			ENABLE_ROTATION = ENABLE_ROTATION ? false : true;
 			SETTING_CHANGE_LAST_UPDATED = DateTime.Now;

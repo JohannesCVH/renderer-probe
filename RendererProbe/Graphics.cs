@@ -184,7 +184,14 @@ public struct Mesh
 			//Only draw polygon 
 			if (Graphics.CalculateNormal(triangle).Z < 0)
 			{
-				Raylib.DrawTriangleLines(
+				// Raylib.DrawTriangleLines(
+				// 	new Vector2(triangle.Vertices[0].X, triangle.Vertices[0].Y),
+				// 	new Vector2(triangle.Vertices[1].X, triangle.Vertices[1].Y),
+				// 	new Vector2(triangle.Vertices[2].X, triangle.Vertices[2].Y),
+				// 	Color.White
+				// );
+
+				Raylib.DrawTriangle(
 					new Vector2(triangle.Vertices[0].X, triangle.Vertices[0].Y),
 					new Vector2(triangle.Vertices[1].X, triangle.Vertices[1].Y),
 					new Vector2(triangle.Vertices[2].X, triangle.Vertices[2].Y),
@@ -192,12 +199,6 @@ public struct Mesh
 				);
 			}
 
-			// Raylib.DrawTriangle(
-			// 	new Vector2(triangle.Vertices[0].X, triangle.Vertices[0].Y),
-			// 	new Vector2(triangle.Vertices[1].X, triangle.Vertices[1].Y),
-			// 	new Vector2(triangle.Vertices[2].X, triangle.Vertices[2].Y),
-			// 	Color.White
-			// );
 		}
 	}
 }
