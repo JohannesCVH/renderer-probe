@@ -5,7 +5,7 @@ namespace RendererProbe;
 
 public class PlayerEntity : Entity
 {
-	public PlayerEntity(Vector3 pos, float scaleF, float angle, Triangle[] triangles) : base(pos, scaleF, angle, triangles)
+	public PlayerEntity(Vector4 pos, float scaleF, float angle, Triangle[] triangles) : base(pos, scaleF, angle, triangles)
 	{
 		
 	}

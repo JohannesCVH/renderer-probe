@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Numerics;
 
 namespace RendererProbe;
@@ -23,9 +24,9 @@ public class ObjReader
             if (tokens[0].Equals("v"))
             {
                 Vector3 vec = new Vector3(
-                    float.Parse(tokens[1]),
-                    float.Parse(tokens[2]),
-                    float.Parse(tokens[3])
+                    float.Parse(tokens[1], CultureInfo.InvariantCulture),
+                    float.Parse(tokens[2], CultureInfo.InvariantCulture),
+                    float.Parse(tokens[3], CultureInfo.InvariantCulture)
                 );
 
                 vertices.Add(vec);

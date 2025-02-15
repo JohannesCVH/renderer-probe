@@ -22,7 +22,7 @@ public class Entity
 		}
 	}
 	public Mesh Mesh { get; set; }
-	public Entity(Vector3 pos, float scaleF, float angle, Triangle[] triangles)
+	public Entity(Vector4 pos, float scaleF, float angle, Triangle[] triangles)
 	{
 		PositionX = pos.X;
 		PositionY = pos.Y;
@@ -35,7 +35,7 @@ public class Entity
 
 	public void Draw()
 	{
-		Mesh.DrawMesh(new Vector3(PositionX, PositionY, PositionZ));
+		Mesh.DrawMesh(new Vector4(PositionX, PositionY, PositionZ, 0));
 	}
 
 	public void RotateRoll(float? angle = null)
@@ -48,17 +48,19 @@ public class Entity
 		{
 			for (int j = 0; j < Mesh.Triangles[i].Vertices.Length; j++)
 			{
-				float x = Mesh.Triangles[i].Vertices[j].X;
-				float y = Mesh.Triangles[i].Vertices[j].Y;
-				float z = Mesh.Triangles[i].Vertices[j].Z;
+				// float x = Mesh.Triangles[i].Vertices[j].X;
+				// float y = Mesh.Triangles[i].Vertices[j].Y;
+				// float z = Mesh.Triangles[i].Vertices[j].Z;
 
-				float x2 = x * (float)Math.Cos(angleRad) - (y * (float)Math.Sin(angleRad));
-				float y2 = x * (float)Math.Sin(angleRad) + (y * (float)Math.Cos(angleRad));
-				float z2 = z;
+				// float x2 = x * (float)Math.Cos(angleRad) - (y * (float)Math.Sin(angleRad));
+				// float y2 = x * (float)Math.Sin(angleRad) + (y * (float)Math.Cos(angleRad));
+				// float z2 = z;
 
-				Mesh.Triangles[i].Vertices[j].X = x2;
-				Mesh.Triangles[i].Vertices[j].Y = y2;
-				Mesh.Triangles[i].Vertices[j].Z = z2;
+				// Mesh.Triangles[i].Vertices[j].X = x2;
+				// Mesh.Triangles[i].Vertices[j].Y = y2;
+				// Mesh.Triangles[i].Vertices[j].Z = z2;
+				
+				Mesh.Triangles[i].Vertices[j] = Mesh.Triangles[i].Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Roll(angleRad));
 			}
 		}
 	}
@@ -73,17 +75,19 @@ public class Entity
 		{
 			for (int j = 0; j < Mesh.Triangles[i].Vertices.Length; j++)
 			{
-				float x = Mesh.Triangles[i].Vertices[j].X;
-				float y = Mesh.Triangles[i].Vertices[j].Y;
-				float z = Mesh.Triangles[i].Vertices[j].Z;
+				// float x = Mesh.Triangles[i].Vertices[j].X;
+				// float y = Mesh.Triangles[i].Vertices[j].Y;
+				// float z = Mesh.Triangles[i].Vertices[j].Z;
 
-				float x2 = (x * (float)Math.Cos(angleRad)) + (z * (float)Math.Sin(angleRad));
-				float y2 = y;
-				float z2 = (-x * (float)Math.Sin(angleRad)) + (z * (float)Math.Cos(angleRad));
+				// float x2 = (x * (float)Math.Cos(angleRad)) + (z * (float)Math.Sin(angleRad));
+				// float y2 = y;
+				// float z2 = (-x * (float)Math.Sin(angleRad)) + (z * (float)Math.Cos(angleRad));
 
-				Mesh.Triangles[i].Vertices[j].X = x2;
-				Mesh.Triangles[i].Vertices[j].Y = y2;
-				Mesh.Triangles[i].Vertices[j].Z = z2;
+				// Mesh.Triangles[i].Vertices[j].X = x2;
+				// Mesh.Triangles[i].Vertices[j].Y = y2;
+				// Mesh.Triangles[i].Vertices[j].Z = z2;
+				
+				Mesh.Triangles[i].Vertices[j] = Mesh.Triangles[i].Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Yaw(angleRad));
 			}
 		}
 	}
@@ -98,17 +102,19 @@ public class Entity
 		{
 			for (int j = 0; j < Mesh.Triangles[i].Vertices.Length; j++)
 			{
-				float x = Mesh.Triangles[i].Vertices[j].X;
-				float y = Mesh.Triangles[i].Vertices[j].Y;
-				float z = Mesh.Triangles[i].Vertices[j].Z;
+				// float x = Mesh.Triangles[i].Vertices[j].X;
+				// float y = Mesh.Triangles[i].Vertices[j].Y;
+				// float z = Mesh.Triangles[i].Vertices[j].Z;
 
-				float x2 = x;
-				float y2 = (y * (float)Math.Cos(angleRad)) - (z * (float)Math.Sin(angleRad));
-				float z2 = (y * (float)Math.Sin(angleRad)) + (z * (float)Math.Cos(angleRad));
+				// float x2 = x;
+				// float y2 = (y * (float)Math.Cos(angleRad)) - (z * (float)Math.Sin(angleRad));
+				// float z2 = (y * (float)Math.Sin(angleRad)) + (z * (float)Math.Cos(angleRad));
 
-				Mesh.Triangles[i].Vertices[j].X = x2;
-				Mesh.Triangles[i].Vertices[j].Y = y2;
-				Mesh.Triangles[i].Vertices[j].Z = z2;
+				// Mesh.Triangles[i].Vertices[j].X = x2;
+				// Mesh.Triangles[i].Vertices[j].Y = y2;
+				// Mesh.Triangles[i].Vertices[j].Z = z2;
+				
+				Mesh.Triangles[i].Vertices[j] = Mesh.Triangles[i].Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Pitch(angleRad));
 			}
 		}
 	}
