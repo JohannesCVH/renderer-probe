@@ -30,12 +30,17 @@ public class Entity
 		ScaleFactor = scaleF;
 		Angle = angle;
 		Mesh = new Mesh { Triangles = triangles };
-		Scale();
+		// Scale();
 	}
 
 	public void Draw()
 	{
-		Mesh.DrawMesh(new Vector4(PositionX, PositionY, PositionZ, 0));
+		Mesh.DrawMesh(new Vector4(PositionX, PositionY, PositionZ, 0), ScaleFactor, Angle);
+	}
+
+	public void Rotate(float? angle = null)
+	{   
+		Angle += angle ?? Rotation;
 	}
 
 	public void RotateRoll(float? angle = null)
@@ -60,7 +65,7 @@ public class Entity
 				// Mesh.Triangles[i].Vertices[j].Y = y2;
 				// Mesh.Triangles[i].Vertices[j].Z = z2;
 				
-				Mesh.Triangles[i].Vertices[j] = Mesh.Triangles[i].Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Roll(angleRad));
+				// Mesh.Triangles[i].Vertices[j] = Mesh.Triangles[i].Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Roll(angleRad));
 			}
 		}
 	}
@@ -87,7 +92,7 @@ public class Entity
 				// Mesh.Triangles[i].Vertices[j].Y = y2;
 				// Mesh.Triangles[i].Vertices[j].Z = z2;
 				
-				Mesh.Triangles[i].Vertices[j] = Mesh.Triangles[i].Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Yaw(angleRad));
+				// Mesh.Triangles[i].Vertices[j] = Mesh.Triangles[i].Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Yaw(angleRad));
 			}
 		}
 	}
@@ -114,7 +119,7 @@ public class Entity
 				// Mesh.Triangles[i].Vertices[j].Y = y2;
 				// Mesh.Triangles[i].Vertices[j].Z = z2;
 				
-				Mesh.Triangles[i].Vertices[j] = Mesh.Triangles[i].Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Pitch(angleRad));
+				// Mesh.Triangles[i].Vertices[j] = Mesh.Triangles[i].Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Pitch(angleRad));
 			}
 		}
 	}

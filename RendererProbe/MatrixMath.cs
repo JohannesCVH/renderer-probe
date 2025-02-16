@@ -105,4 +105,58 @@ public static class MatrixMath
 		
 		return matrix;
 	}
+
+    public static Mat4x4 CreateTranslationAndScaleMatrix(Vector4 pos, float scale)
+    {
+        Mat4x4 matrix = new Mat4x4();
+
+        matrix.M[0,0] = scale / Globals.WORLD_SIZE;
+        matrix.M[0,1] = 0.0f;
+        matrix.M[0,2] = 0.0f;
+        matrix.M[0,3] = 0.0f;
+                
+        matrix.M[1,0] = 0.0f;
+        matrix.M[1,1] = scale / Globals.WORLD_SIZE;
+        matrix.M[1,2] = 0.0f;
+        matrix.M[1,3] = 0.0f;
+                
+        matrix.M[2,0] = 0.0f;
+        matrix.M[2,1] = 0.0f;
+        matrix.M[2,2] = scale / Globals.WORLD_SIZE;
+        matrix.M[2,3] = 0.0f;
+                
+        matrix.M[3,0] = 0.0f;
+        matrix.M[3,1] = 0.0f;
+        matrix.M[3,2] = 0.0f;
+        matrix.M[3,3] = 1.0f;
+                
+        return matrix;
+    }
+
+    public static Mat4x4 CreatePerspectiveMatrix()
+    {
+        Mat4x4 matrix = new Mat4x4();
+
+        matrix.M[0,0] = Globals.WINDOW_ASPECT;
+        matrix.M[0,1] = 0.0f;
+        matrix.M[0,2] = 0.0f;
+        matrix.M[0,3] = 0.0f;
+                
+        matrix.M[1,0] = 0.0f;
+        matrix.M[1,1] = 1.0f;
+        matrix.M[1,2] = 0.0f;
+        matrix.M[1,3] = 0.0f;
+                
+        matrix.M[2,0] = 0.0f;
+        matrix.M[2,1] = 0.0f;
+        matrix.M[2,2] = 1.0f;
+        matrix.M[2,3] = 0.0f;
+                
+        matrix.M[3,0] = 0.0f;
+        matrix.M[3,1] = 0.0f;
+        matrix.M[3,2] = 0.0f;
+        matrix.M[3,3] = 1.0f;
+                
+        return matrix;
+    }
 }

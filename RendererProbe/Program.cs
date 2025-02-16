@@ -50,7 +50,7 @@ internal class Program
 
 		Entity box = new Entity(
 			new Vector4(0.0f, 0.0f, 0.0f, 0.0f),
-			30,
+			20.0f,
 			0.0f,
 			teapotMesh.Select(x => new Triangle(x)).ToArray()
 		);
@@ -88,9 +88,10 @@ internal class Program
 			box.Draw();
 			if (ENABLE_ROTATION)
 			{
-				box.RotateRoll();
-				box.RotateYaw();
-				box.RotatePitch();
+				box.Rotate();
+				// box.RotateRoll();
+				// box.RotateYaw();
+				// box.RotatePitch();
 			}
 
 			Raylib.EndDrawing();
@@ -125,7 +126,7 @@ internal class Program
 		}
 
 		//Rotate
-		if (Raylib.IsKeyDown(KeyboardKey.R) && DateTime.Now.Subtract(SETTING_CHANGE_LAST_UPDATED).Milliseconds > 300)
+		if (Raylib.IsKeyDown(KeyboardKey.R) && DateTime.Now.Subtract(SETTING_CHANGE_LAST_UPDATED).Milliseconds > 100)
 		{
 			ENABLE_ROTATION = ENABLE_ROTATION ? false : true;
 			SETTING_CHANGE_LAST_UPDATED = DateTime.Now;

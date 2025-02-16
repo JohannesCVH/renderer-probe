@@ -154,49 +154,56 @@ public struct Mesh
 {
 	public Triangle[] Triangles;
 
-	public void DrawMesh(Vector4 meshPos)
+	public void DrawMesh(Vector4 meshPos, float scale, float angle)
 	{
-		meshPos = Graphics.Vector4Normalize(meshPos);
+		// meshPos = Graphics.Vector4Normalize(meshPos);
 		Vector4 cameraPos = Graphics.Vector4Normalize(new Vector4(Camera.CAMERA_X, Camera.CAMERA_Y, Camera.CAMERA_Z, 0.0f));
 		
 		//Calculate Middle
 		float xMid = Triangles.Sum(t => t.Vertices[0].X + t.Vertices[1].X + t.Vertices[2].X) / (3.0f * Triangles.Length);
 		float yMid = Triangles.Sum(t => t.Vertices[0].Y + t.Vertices[1].Y + t.Vertices[2].Y) / (3.0f * Triangles.Length);
 		float zMid = Triangles.Sum(t => t.Vertices[0].Z + t.Vertices[1].Z + t.Vertices[2].Z) / (3.0f * Triangles.Length);
+
+		float angleRad = Graphics.AngleToRad(angle);
 		
 		for (int i = 0; i < Triangles.Length; i++)
 		{
 			Triangle triangle = new Triangle(Triangles[i]);
 
 			for (int j = 0; j < 3; j++)
-			{
-				float x = triangle.Vertices[j].X;
-				float y = triangle.Vertices[j].Y;
-				float z = triangle.Vertices[j].Z;
+			{	
+				// float x = triangle.Vertices[j].X;
+				// float y = triangle.Vertices[j].Y;
+				// float z = triangle.Vertices[j].Z;
 				
 				//Camera Position
-				x = x - cameraPos.X;
-				y = y - cameraPos.Y;
+				// x = x - cameraPos.X;
+				// y = y - cameraPos.Y;
 
 				//Translate to coordinates
-				x += meshPos.X - xMid;
-				y += meshPos.Y - yMid;
-				z += meshPos.Z - zMid;
-
-				//Camera Zoom
-				x /= Camera.CAMERA_ZOOM;
-				y /= Camera.CAMERA_ZOOM;
-				
-				//Aspect Ratio
-				x *= WINDOW_ASPECT;
+				triangle.Vertices[j].X += meshPos.X - xMid;
+				triangle.Vertices[j].Y += meshPos.Y - yMid;
+				triangle.Vertices[j].Z += meshPos.Z - zMid;
 				
 				//Set Final
-				triangle.Vertices[j].X = x;
-				triangle.Vertices[j].Y = y;
+				// triangle.Vertices[j].X = x;
+				// triangle.Vertices[j].Y = y;
 
 				// Triangles[i].Vertices[j] = Graphics.Vector3ToWorldSpace(Triangles[i].Vertices[j], coordinates);
 
 				//triangle.Vertices[j] = Graphics.Vector3ToPerspective(triangle.Vertices[j]);
+
+				//Rotation
+				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Pitch(angleRad));
+				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Yaw(angleRad));
+				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Roll(angleRad));
+
+				//Translation & Scale
+				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateTranslationAndScaleMatrix(new Vector4(), scale));
+
+				//Aspect Ratio
+				// x *= WINDOW_ASPECT;
+				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreatePerspectiveMatrix());
 			}
 
 			//To Screen Space

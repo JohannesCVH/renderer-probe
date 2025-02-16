@@ -11,7 +11,7 @@ internal static class Globals
     public static float Z_NEAR = 1.0f;
     public static float Z_FAR = 10.0f;
     public static bool PERSPECTIVE = false;
-    public const float WORLD_SIZE = 1000.0f;
+    public const float WORLD_SIZE = 100.0f;
     public static bool ENABLE_ROTATION = false;
     public static DateTime SETTING_CHANGE_LAST_UPDATED = DateTime.Now;
 }
