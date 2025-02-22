@@ -1,4 +1,5 @@
 using System.Numerics;
+using static RendererProbe.Globals;
 
 namespace RendererProbe;
 
@@ -106,57 +107,115 @@ public static class MatrixMath
 		return matrix;
 	}
 
-    public static Mat4x4 CreateTranslationAndScaleMatrix(Vector4 pos, float scale)
-    {
-        Mat4x4 matrix = new Mat4x4();
+	public static Mat4x4 CreateScaleMatrix(float scale)
+	{
+		Mat4x4 matrix = new Mat4x4();
 
-        matrix.M[0,0] = scale / Globals.WORLD_SIZE;
-        matrix.M[0,1] = 0.0f;
-        matrix.M[0,2] = 0.0f;
-        matrix.M[0,3] = 0.0f;
-                
-        matrix.M[1,0] = 0.0f;
-        matrix.M[1,1] = scale / Globals.WORLD_SIZE;
-        matrix.M[1,2] = 0.0f;
-        matrix.M[1,3] = 0.0f;
-                
-        matrix.M[2,0] = 0.0f;
-        matrix.M[2,1] = 0.0f;
-        matrix.M[2,2] = scale / Globals.WORLD_SIZE;
-        matrix.M[2,3] = 0.0f;
-                
-        matrix.M[3,0] = 0.0f;
-        matrix.M[3,1] = 0.0f;
-        matrix.M[3,2] = 0.0f;
-        matrix.M[3,3] = 1.0f;
-                
-        return matrix;
-    }
+		matrix.M[0,0] = scale;
+		matrix.M[0,1] = 0.0f;
+		matrix.M[0,2] = 0.0f;
+		matrix.M[0,3] = 0.0f;
+				
+		matrix.M[1,0] = 0.0f;
+		matrix.M[1,1] = scale;
+		matrix.M[1,2] = 0.0f;
+		matrix.M[1,3] = 0.0f;
+				
+		matrix.M[2,0] = 0.0f;
+		matrix.M[2,1] = 0.0f;
+		matrix.M[2,2] = scale;
+		matrix.M[2,3] = 0.0f;
+				
+		matrix.M[3,0] = 0.0f;
+		matrix.M[3,1] = 0.0f;
+		matrix.M[3,2] = 0.0f;
+		matrix.M[3,3] = 1.0f;
+				
+		return matrix;
+	}
+	
+	public static Mat4x4 CreateTranslationMatrix(Vector4 pos)
+	{
+		Mat4x4 matrix = new Mat4x4();
 
-    public static Mat4x4 CreatePerspectiveMatrix()
-    {
-        Mat4x4 matrix = new Mat4x4();
+		matrix.M[0,0] = 1.0f;
+		matrix.M[0,1] = 0.0f;
+		matrix.M[0,2] = 0.0f;
+		matrix.M[0,3] = pos.X;
+				
+		matrix.M[1,0] = 0.0f;
+		matrix.M[1,1] = 1.0f;
+		matrix.M[1,2] = 0.0f;
+		matrix.M[1,3] = pos.Y;
+				
+		matrix.M[2,0] = 0.0f;
+		matrix.M[2,1] = 0.0f;
+		matrix.M[2,2] = 1.0f;
+		matrix.M[2,3] = pos.Z;
+				
+		matrix.M[3,0] = 0.0f;
+		matrix.M[3,1] = 0.0f;
+		matrix.M[3,2] = 0.0f;
+		matrix.M[3,3] = 1.0f;
+				
+		return matrix;
+	}
 
-        matrix.M[0,0] = Globals.WINDOW_ASPECT;
-        matrix.M[0,1] = 0.0f;
-        matrix.M[0,2] = 0.0f;
-        matrix.M[0,3] = 0.0f;
-                
-        matrix.M[1,0] = 0.0f;
-        matrix.M[1,1] = 1.0f;
-        matrix.M[1,2] = 0.0f;
-        matrix.M[1,3] = 0.0f;
-                
-        matrix.M[2,0] = 0.0f;
-        matrix.M[2,1] = 0.0f;
-        matrix.M[2,2] = 1.0f;
-        matrix.M[2,3] = 0.0f;
-                
-        matrix.M[3,0] = 0.0f;
-        matrix.M[3,1] = 0.0f;
-        matrix.M[3,2] = 0.0f;
-        matrix.M[3,3] = 1.0f;
-                
-        return matrix;
-    }
+	public static Mat4x4 CreateAspectMatrix()
+	{
+		Mat4x4 matrix = new Mat4x4();
+
+		matrix.M[0,0] = WINDOW_ASPECT;
+		matrix.M[0,1] = 0.0f;
+		matrix.M[0,2] = 0.0f;
+		matrix.M[0,3] = 0.0f;
+				
+		matrix.M[1,0] = 0.0f;
+		matrix.M[1,1] = 1.0f;
+		matrix.M[1,2] = 0.0f;
+		matrix.M[1,3] = 0.0f;
+				
+		matrix.M[2,0] = 0.0f;
+		matrix.M[2,1] = 0.0f;
+		matrix.M[2,2] = 1.0f;
+		matrix.M[2,3] = 0.0f;
+				
+		matrix.M[3,0] = 0.0f;
+		matrix.M[3,1] = 0.0f;
+		matrix.M[3,2] = 0.0f;
+		matrix.M[3,3] = 1.0f;
+				
+		return matrix;
+	}
+	
+	public static Mat4x4 CreatePerspectiveMatrix(Vector4 vec)
+	{
+		Mat4x4 matrix = new Mat4x4();
+
+		var fov_half = WINDOW_FOV / 2;
+
+		matrix.M[0,0] = WINDOW_ASPECT * (1 / ((float)Math.Tan(Graphics.AngleToRad(fov_half)) * vec.Z));
+		matrix.M[0,1] = 0.0f;
+		matrix.M[0,2] = 0.0f;
+		matrix.M[0,3] = 0.0f;
+				
+		matrix.M[1,0] = 0.0f;
+		matrix.M[1,1] = 1 / ((float)Math.Tan(Graphics.AngleToRad(fov_half)) * vec.Z);
+		matrix.M[1,2] = 0.0f;
+		matrix.M[1,3] = 0.0f;
+				
+		matrix.M[2,0] = 0.0f;
+		matrix.M[2,1] = 0.0f;
+		// matrix.M[2,2] = 1.0f;
+		// matrix.M[2,3] = 0.0f;
+		matrix.M[2,2] = Z_FAR / (Z_FAR - Z_NEAR);
+		matrix.M[2,3] = -(Z_FAR * Z_NEAR / (Z_FAR - Z_NEAR));
+				
+		matrix.M[3,0] = 0.0f;
+		matrix.M[3,1] = 0.0f;
+		matrix.M[3,2] = 0.0f;
+		matrix.M[3,3] = 1.0f;
+				
+		return matrix;
+	}
 }

@@ -11,13 +11,20 @@ internal class Program
 		Raylib.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Renderer-Probe");
 		Raylib.SetTargetFPS(30);
 
-		string filePath = Path.Combine(
+		string filePathTeapot = Path.Combine(
 			Environment.CurrentDirectory,
 			"Assets/teapot.obj"
 		);
+		
+		string filePathShip = Path.Combine(
+			Environment.CurrentDirectory,
+			"Assets/ship.obj"
+		);
 
-		ObjReader objReader = new ObjReader(filePath);
-		Triangle[] teapotMesh = objReader.Triangles.ToArray();
+		ObjReader teapotReader = new ObjReader(filePathTeapot);
+		Triangle[] teapotMesh = teapotReader.Triangles.ToArray();
+		ObjReader shipReader = new ObjReader(filePathShip);
+		Triangle[] shipMesh = shipReader.Triangles.ToArray();
 
 		Triangle[] cubeTris =
 		[
@@ -46,11 +53,13 @@ internal class Program
 			new Triangle( 1.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f )
 		];
 
-		PlayerEntity player = new PlayerEntity(new Vector4(0.0f, 0.0f, 0.0f, 1.0f), 10.0f, 0.0f, []);
+		Camera.CAMERA_X = 0.0f;
+		Camera.CAMERA_Y = 0.0f;
+		Camera.CAMERA_Z = 0.0f;
 
 		Entity box = new Entity(
-			new Vector4(0.0f, 0.0f, 0.0f, 0.0f),
-			20.0f,
+			new Vector4(0.0f, 0.0f, 8.0f, 1.0f),
+			1.0f,
 			0.0f,
 			teapotMesh.Select(x => new Triangle(x)).ToArray()
 		);
@@ -63,9 +72,12 @@ internal class Program
 			Raylib.ClearBackground(Color.Black);
 			// DrawGrid();
 			HandleInput();
-			// Raylib.DrawFPS(Graphics.ToScreenSpaceX(-0.99f), Graphics.ToScreenSpaceY(0.99f));
+			Camera.HandleInput();
+			Raylib.DrawFPS(Graphics.ToScreenSpaceX(-0.99f), Graphics.ToScreenSpaceY(0.99f));
 			// Raylib.DrawText($"Camera Zoom: {Camera.CAMERA_ZOOM:0.00}", ToScreenSpaceX(-0.99f), ToScreenSpaceY(0.90f), 16, Color.White);
-			// Raylib.DrawText($"FOV: {WINDOW_FOV}", ToScreenSpaceX(-0.99f), ToScreenSpaceY(0.90f), 16, Color.White);
+			Raylib.DrawText($"FOV: {WINDOW_FOV}", Graphics.ToScreenSpaceX(-0.99f), Graphics.ToScreenSpaceY(0.90f), 16, Color.White);
+			Raylib.DrawText($"Perspective: {PERSPECTIVE}", Graphics.ToScreenSpaceX(-0.99f), Graphics.ToScreenSpaceY(0.86f), 16, Color.White);
+			Raylib.DrawText($"Camera Yaw: {Camera.CAMERA_YAW}", Graphics.ToScreenSpaceX(-0.99f), Graphics.ToScreenSpaceY(0.82f), 16, Color.White);
 
 			// float fovRad = AngleToRad(WINDOW_FOV);
 			// Z_NEAR = 1 / (float)Math.Tan(fovRad / 2);
@@ -80,7 +92,7 @@ internal class Program
 			//if (cube.PositionY >= 1.0f && cubeYDir == 1.0f) cubeYDir = -1.0f;
 			//else if (cube.PositionY <= -1.0f && cubeYDir == -1.0f) cubeYDir = 1.0f;
 
-			player.Draw();
+			// camera.Draw();
 
 			//Rotate
 			// player.Rotate(-2.0f);
@@ -113,17 +125,17 @@ internal class Program
 
 
 		//Camera Zoom
-		if (Raylib.IsKeyDown(KeyboardKey.LeftControl) && Raylib.IsKeyDown(KeyboardKey.Up))
-		{
-			if (Camera.CAMERA_ZOOM > 0.1f)
-				Camera.CAMERA_ZOOM -= 0.05f;
-		}
+		// if (Raylib.IsKeyDown(KeyboardKey.LeftControl) && Raylib.IsKeyDown(KeyboardKey.Up))
+		// {
+		// 	if (Camera.CAMERA_ZOOM > 0.1f)
+		// 		Camera.CAMERA_ZOOM -= 0.05f;
+		// }
 
-		if (Raylib.IsKeyDown(KeyboardKey.LeftControl) && Raylib.IsKeyDown(KeyboardKey.Down))
-		{
-			if (Camera.CAMERA_ZOOM < 1.0f)
-				Camera.CAMERA_ZOOM += 0.05f;
-		}
+		// if (Raylib.IsKeyDown(KeyboardKey.LeftControl) && Raylib.IsKeyDown(KeyboardKey.Down))
+		// {
+		// 	if (Camera.CAMERA_ZOOM < 1.0f)
+		// 		Camera.CAMERA_ZOOM += 0.05f;
+		// }
 
 		//Rotate
 		if (Raylib.IsKeyDown(KeyboardKey.R) && DateTime.Now.Subtract(SETTING_CHANGE_LAST_UPDATED).Milliseconds > 100)
