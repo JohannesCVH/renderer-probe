@@ -8,8 +8,8 @@ internal static class Globals
 	public const int WINDOW_HEIGHT_HALF = WINDOW_HEIGHT / 2;
 	public static int WINDOW_FOV = 90;
 	public const float WINDOW_ASPECT = (float)WINDOW_HEIGHT / WINDOW_WIDTH;
-	public static float Z_NEAR = 0.1f;
-	public static float Z_FAR = 10.0f;
+	public static float Z_NEAR = 1.0f;
+	public static float Z_FAR = 1000.0f;
 	public static bool PERSPECTIVE = true;
 	public const float WORLD_SIZE = 1.0f;
 	public static bool ENABLE_ROTATION = false;
