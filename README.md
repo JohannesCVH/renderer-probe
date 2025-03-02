@@ -1,5 +1,5 @@
 
-# MetaBalls
+# 3D Renderer
 
 Basic 3D software renderer written in C# and SFML.NET
 
