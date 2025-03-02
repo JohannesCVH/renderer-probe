@@ -1,4 +1,5 @@
-﻿using Raylib_cs;
+﻿using SFML.Graphics;
+using SFML.System;
 using System.Numerics;
 using static RendererProbe.Globals;
 
@@ -40,52 +41,9 @@ public static class Graphics
 		return new Vector2() { X = x, Y = y };
 	}
 
-	public static Vector3 ScaleVector3(Vector3 vec, float scaleF)
-	{
-		vec.X = vec.X * scaleF;
-		vec.Y = vec.Y * scaleF;
-		vec.Z = vec.Z * scaleF;
-
-		return vec;
-	}
-
-	public static Vector3 Vector3ToPerspective(Vector3 vec)
-	{
-		float fovRad = AngleToRad(WINDOW_FOV / 2);
-		//Distance from camera to the projection plane.
-		// 1 / tan(angle / 2)
-		//float zNearDistance = 1 / ((float)Math.Tan(fovRad / 2));
-
-		float z = Z_NEAR + vec.Z;
-
-		//float z = vec.Z;
-		float x = ((vec.X * WINDOW_ASPECT) * (1 / (float)Math.Tan(fovRad))) / z;
-		float y = (vec.Y * (1 / (float)Math.Tan(fovRad))) / z;
-
-		return new Vector3(x, y, z);
-	}
-
 	public static float AngleToRad(float angle)
 	{
 		return angle * ((float)Math.PI / 180.0f);
-	}
-
-	public static Vector3 Vector3ToWorldSpace(Vector3 pos, Vector3 coords)
-	{
-		pos.X = pos.X + coords.X;
-		pos.Y = pos.Y + coords.Y;
-		pos.Z = pos.Z + coords.Z;
-
-		return pos;
-	}
-	
-	public static Vector3 Vector3Normalize(Vector3 pos)
-	{
-		pos.X = pos.X / WORLD_SIZE;
-		pos.Y = pos.Y / WORLD_SIZE;
-		pos.Z = pos.Z / WORLD_SIZE;
-		
-		return pos;
 	}
 	
 	public static Vector4 Vector4Normalize(Vector4 pos)
@@ -120,24 +78,33 @@ public static class Graphics
 
 		return normal;
 	}
+
+	public static float CalculateDotProduct(Vector3 vecA, Vector3 vecB)
+	{
+		float dotProduct = (vecA.X * vecB.X) + (vecA.Y * vecB.Y) + (vecA.Z * vecB.Z);
+		return dotProduct;
+	}
 }
 
 public struct Triangle
 {
 	public Vector4[] Vertices;
+	public Color Color = Color.White;
 
 	public Triangle()
 	{
 		Vertices = new Vector4[3];
 	}
 
-	public Triangle(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3)
+	public Triangle(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, Color? color = default)
 	{
 		Vertices = [
 			new Vector4(x1, y1, z1, 1),
 			new Vector4(x2, y2, z2, 1),
 			new Vector4(x3, y3, z3, 1)
 		];
+
+		Color = color ?? Color.White;
 	}
 
 	public Triangle(Triangle triangle)
@@ -147,6 +114,8 @@ public struct Triangle
 			triangle.Vertices[1],
 			triangle.Vertices[2]
 		];
+
+		Color = triangle.Color;
 	}
 }
 
@@ -154,16 +123,8 @@ public struct Mesh
 {
 	public Triangle[] Triangles;
 
-	public void DrawMesh(Vector4 meshPos, float scale, float angle)
+	public void DrawMesh(RenderWindow window, Vector4 meshPos, float scale, float angle)
 	{
-		// meshPos = Graphics.Vector4Normalize(meshPos);
-		Vector4 cameraPos = Graphics.Vector4Normalize(new Vector4(Camera.CAMERA_X, Camera.CAMERA_Y, Camera.CAMERA_Z, 0.0f));
-		
-		//Calculate Middle
-		float xMid = Triangles.Sum(t => t.Vertices[0].X + t.Vertices[1].X + t.Vertices[2].X) / (3.0f * Triangles.Length);
-		float yMid = Triangles.Sum(t => t.Vertices[0].Y + t.Vertices[1].Y + t.Vertices[2].Y) / (3.0f * Triangles.Length);
-		float zMid = Triangles.Sum(t => t.Vertices[0].Z + t.Vertices[1].Z + t.Vertices[2].Z) / (3.0f * Triangles.Length);
-
 		float angleRad = Graphics.AngleToRad(angle);
 		
 		for (int i = 0; i < Triangles.Length; i++)
@@ -172,69 +133,75 @@ public struct Mesh
 
 			for (int j = 0; j < 3; j++)
 			{	
-				// float x = triangle.Vertices[j].X;
-				// float y = triangle.Vertices[j].Y;
-				// float z = triangle.Vertices[j].Z;
-				
-				//Camera Position
-				// x = x - cameraPos.X;
-				// y = y - cameraPos.Y;
-
-				//Translate to coordinates
-				triangle.Vertices[j].X += meshPos.X - xMid;
-				triangle.Vertices[j].Y += meshPos.Y - yMid;
-				triangle.Vertices[j].Z += meshPos.Z - zMid;
-				
-				//Set Final
-				// triangle.Vertices[j].X = x;
-				// triangle.Vertices[j].Y = y;
-
-				// Triangles[i].Vertices[j] = Graphics.Vector3ToWorldSpace(Triangles[i].Vertices[j], coordinates);
-
-				//triangle.Vertices[j] = Graphics.Vector3ToPerspective(triangle.Vertices[j]);
+				//Scale
+				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateScaleMatrix(scale));
 
 				//Rotation
-				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Pitch(angleRad));
-				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Yaw(angleRad));
-				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Roll(angleRad));
-
-				//Translation & Scale
-				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateTranslationAndScaleMatrix(new Vector4(), scale));
-
-				//Aspect Ratio
-				// x *= WINDOW_ASPECT;
-				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreatePerspectiveMatrix());
+				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Pitch(Graphics.AngleToRad(angleRad)));
+				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Yaw(Graphics.AngleToRad(angle)));
+				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateRotationMatrix_Roll(Graphics.AngleToRad(angle)));
+				
+				//Translation
+				triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreateTranslationMatrix(meshPos));
+				
+				//Perspective Projection
+				if (PERSPECTIVE)
+				{
+					triangle.Vertices[j] = triangle.Vertices[j].MultiplyVector(MatrixMath.CreatePerspectiveMatrix());
+				}
+				else
+				{
+					triangle.Vertices[j].X = WINDOW_ASPECT * triangle.Vertices[j].X;
+				}
 			}
 
-			//To Screen Space
-			triangle.Vertices[0] = Graphics.ToScreenSpaceVec4(triangle.Vertices[0]);
-			triangle.Vertices[1] = Graphics.ToScreenSpaceVec4(triangle.Vertices[1]);
-			triangle.Vertices[2] = Graphics.ToScreenSpaceVec4(triangle.Vertices[2]);
+			//Normalize
+			// triangle.Vertices[0] = Graphics.Vector4Normalize(triangle.Vertices[0]);
+			// triangle.Vertices[1] = Graphics.Vector4Normalize(triangle.Vertices[1]);
+			// triangle.Vertices[2] = Graphics.Vector4Normalize(triangle.Vertices[2]);
 
-			//Only draw polygon 
-			if (Graphics.CalculateNormal(triangle).Z < 0)
+			//Should Draw
+			bool shouldDraw = ShouldDraw(triangle);
+
+			if (shouldDraw)
 			{
-				Raylib.DrawTriangleLines(
-					new Vector2(triangle.Vertices[0].X, triangle.Vertices[0].Y),
-					new Vector2(triangle.Vertices[1].X, triangle.Vertices[1].Y),
-					new Vector2(triangle.Vertices[2].X, triangle.Vertices[2].Y),
-					Color.White
-				);
+				//Illumination
+				Vector3 triNormal = Graphics.CalculateNormal(triangle);
+				Vector4 lightDir = new Vector4(0.0f, 0.0f, -1.0f, 0.0f);
+				float lightDirL = (float)Math.Sqrt((lightDir.X * lightDir.X) + (lightDir.Y * lightDir.Y) + (lightDir.Z * lightDir.Z));
+				lightDir.X /= lightDirL;
+				lightDir.Y /= lightDirL;
+				lightDir.Z /= lightDirL;
 
-				// Raylib.DrawTriangle(
-				// 	new Vector2(triangle.Vertices[0].X, triangle.Vertices[0].Y),
-				// 	new Vector2(triangle.Vertices[1].X, triangle.Vertices[1].Y),
-				// 	new Vector2(triangle.Vertices[2].X, triangle.Vertices[2].Y),
-				// 	Color.White
-				// );
+				float lightDot = (triNormal.X * lightDir.X) + (triNormal.Y * lightDir.Y) + (triNormal.Z * lightDir.Z);
+				byte lightDotAdj = (byte)((lightDot + 1) / 2 * 255);
+
+				Color colorShade = new Color(lightDotAdj, lightDotAdj, lightDotAdj, 255);
+				
+				//To Screen Space
+				triangle.Vertices[0] = Graphics.ToScreenSpaceVec4(triangle.Vertices[0]);
+				triangle.Vertices[1] = Graphics.ToScreenSpaceVec4(triangle.Vertices[1]);
+				triangle.Vertices[2] = Graphics.ToScreenSpaceVec4(triangle.Vertices[2]);
+
+				VertexArray vaTri = new VertexArray(PrimitiveType.Triangles, 3);
+				vaTri.Append(new Vertex(new Vector2f(triangle.Vertices[0].X, triangle.Vertices[0].Y), colorShade));
+				vaTri.Append(new Vertex(new Vector2f(triangle.Vertices[1].X, triangle.Vertices[1].Y), colorShade));
+				vaTri.Append(new Vertex(new Vector2f(triangle.Vertices[2].X, triangle.Vertices[2].Y), colorShade));
+
+				window.Draw(vaTri);
 			}
-
-			// Raylib.DrawTriangleLines(
-			// 	new Vector2(triangle.Vertices[0].X, triangle.Vertices[0].Y),
-			// 	new Vector2(triangle.Vertices[1].X, triangle.Vertices[1].Y),
-			// 	new Vector2(triangle.Vertices[2].X, triangle.Vertices[2].Y),
-			// 	Color.White
-			// );
 		}
+	}
+	private bool ShouldDraw(Triangle tri)
+	{
+		Vector3 triNormal = Graphics.CalculateNormal(tri);
+
+		float sum = 
+			(triNormal.X * (tri.Vertices[0].X - Camera.CAMERA_X)) +
+			(triNormal.Y * (tri.Vertices[0].Y - Camera.CAMERA_Y)) +
+			(triNormal.Z * (tri.Vertices[0].Z - Camera.CAMERA_Z));
+		
+		if (sum < 0.0f) return true;
+		else return false;
 	}
 }
