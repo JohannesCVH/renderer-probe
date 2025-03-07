@@ -7,7 +7,7 @@ internal static class Camera
 	public static float CAMERA_X = 0.0f;
 	public static float CAMERA_Y = 0.0f;
 	public static float CAMERA_Z = 0.0f;
-	public static Vector3 CAMERA_DIRECTION = new Vector3(0.0f, 0.0f, 0.0f);
+	public static Vector4 CAMERA_DIRECTION = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 	public static float CAMERA_YAW = 0.0f;
 	public static DateTime LAST_UPDATED = DateTime.Now;
 	
