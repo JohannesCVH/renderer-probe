@@ -83,8 +83,8 @@ public class WindowSFML
 
         //Create entity
         MainEntity = new Entity(
-			new Vector4(0.0f, 0.0f, 10.0f, 1.0f),
-			1.0f,
+			new Vector4(0.0f, 0.0f, 12.0f, 1.0f),
+			1.4f,
 			0.0f,
 			shipMesh.Select(x => new Triangle(x)).ToArray()
 		);
@@ -138,10 +138,10 @@ public class WindowSFML
         if (eventArgs.Code == Keyboard.Key.P)
             PERSPECTIVE = PERSPECTIVE ? false : true;
 
-        // if (eventArgs.Code == Keyboard.Key.Up)
-        //     MainEntity.PositionZ += 0.5f;
-        // if (eventArgs.Code == Keyboard.Key.Down)
-        //     MainEntity.PositionZ -= 0.5f;
+        if (eventArgs.Code == Keyboard.Key.Up)
+            MainEntity.Position = new Vector4(MainEntity.Position.X, MainEntity.Position.Y, MainEntity.Position.Z + 0.25f, MainEntity.Position.W);
+        if (eventArgs.Code == Keyboard.Key.Down)
+            MainEntity.Position = new Vector4(MainEntity.Position.X, MainEntity.Position.Y, MainEntity.Position.Z - 0.25f, MainEntity.Position.W);
 
         if (eventArgs.Code == Keyboard.Key.R && DateTime.Now.Subtract(SETTING_CHANGE_LAST_UPDATED).Milliseconds > 100)
 		{
