@@ -1,13 +1,13 @@
 ﻿using System.Numerics;
 using SFML.Graphics;
+using static RendererProbe.MathLib;
+using static RendererProbe.Graphics;
 
 namespace RendererProbe;
 
 public class Entity
 {
-	public float PositionX { get; set; }
-	public float PositionY { get; set; }
-	public float PositionZ { get; set; }
+	public Vector4 Position { get; set; }
 
 	public float ScaleFactor { get; set; }
 	public float Rotation { get; set; }
@@ -23,19 +23,40 @@ public class Entity
 		}
 	}
 	public Mesh Mesh { get; set; }
+
+	//Rotation Matrices
+	// Mat4x4 
+
+	Mat4x4 ScaleMatrix { get; set; }
+	Mat4x4 RotationMatrix { get; set; }
+	Mat4x4 TransMatrix { get; set; }
+	Mat4x4 WorldMatrix { get; set; }
+	
+
 	public Entity(Vector4 pos, float scaleF, float angle, Triangle[] triangles)
 	{
-		PositionX = pos.X;
-		PositionY = pos.Y;
-		PositionZ = pos.Z;
+		Position = pos;
 		ScaleFactor = scaleF;
 		Angle = angle;
-		Mesh = new Mesh { Triangles = triangles };
+		Mesh = new Mesh(triangles);
+		Update();
+	}
+
+	public void Update()
+	{
+		float angleRad = AngleToRad(Angle);
+		
+		ScaleMatrix = CreateScaleMatrix(ScaleFactor);
+		RotationMatrix = MatMulMat(ScaleMatrix, CreateRotationMatrix_Pitch(angleRad));
+		RotationMatrix = MatMulMat(RotationMatrix, CreateRotationMatrix_Yaw(angleRad));
+		RotationMatrix = MatMulMat(RotationMatrix, CreateRotationMatrix_Roll(angleRad));
+		TransMatrix = MatMulMat(RotationMatrix, CreateTranslationMatrix(Position));
+		WorldMatrix = MatMulMat(TransMatrix, CreateIdentityMatrix());
 	}
 
 	public void Draw(RenderWindow window)
 	{
-		Mesh.DrawMesh(window, new Vector4(PositionX, PositionY, PositionZ, 0), ScaleFactor, Angle);
+		Mesh.DrawMesh(window, WorldMatrix, ScaleFactor, Angle);
 	}
 
 	public void Rotate(float? angle = null)

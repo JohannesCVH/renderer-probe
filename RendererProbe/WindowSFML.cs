@@ -13,7 +13,7 @@ public class WindowSFML
     public void Run()
 	{
 		var videoMode = new VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT);
-		var window = new RenderWindow(videoMode, "Hello MetaBalls");
+		var window = new RenderWindow(videoMode, "Hello Render Probe");
 		window.SetFramerateLimit(30);
 		window.SetVerticalSyncEnabled(true);
 		window.KeyPressed += Window_KeyPressed;
@@ -55,18 +55,18 @@ public class WindowSFML
 
         //Load Meshes
         string filePathTeapot = Path.Combine(
-			Environment.CurrentDirectory,
-			"Assets/teapot.obj"
+			Directory.GetCurrentDirectory(),
+			"./Assets/teapot.obj"
 		);
 		
 		string filePathShip = Path.Combine(
-			Environment.CurrentDirectory,
-			"Assets/ship.obj"
+			Directory.GetCurrentDirectory(),
+			"./Assets/ship.obj"
 		);
 
 		string filePathCube = Path.Combine(
-			Environment.CurrentDirectory,
-			"Assets/cube.obj"
+			Directory.GetCurrentDirectory(),
+			"./Assets/cube.obj"
 		);
 
 		ObjReader teapotReader = new ObjReader(filePathTeapot);
@@ -83,10 +83,10 @@ public class WindowSFML
 
         //Create entity
         MainEntity = new Entity(
-			new Vector4(0.0f, 0.0f, 8.0f, 1.0f),
-			1.0f,
+			new Vector4(0.0f, 0.0f, 12.0f, 1.0f),
+			1.4f,
 			0.0f,
-			teapotMesh.Select(x => new Triangle(x)).ToArray()
+			shipMesh.Select(x => new Triangle(x)).ToArray()
 		);
 		MainEntity.Rotation = 0.5f;
 
@@ -110,6 +110,9 @@ public class WindowSFML
 			}
             
 			window.Display();
+            
+            //Update entity
+            MainEntity.Update();
             
 			//Update texts
 			fps = 1.0f / clock.ElapsedTime.AsSeconds();
@@ -136,9 +139,9 @@ public class WindowSFML
             PERSPECTIVE = PERSPECTIVE ? false : true;
 
         if (eventArgs.Code == Keyboard.Key.Up)
-            MainEntity.PositionZ += 0.5f;
+            MainEntity.Position = new Vector4(MainEntity.Position.X, MainEntity.Position.Y, MainEntity.Position.Z + 0.25f, MainEntity.Position.W);
         if (eventArgs.Code == Keyboard.Key.Down)
-            MainEntity.PositionZ -= 0.5f;
+            MainEntity.Position = new Vector4(MainEntity.Position.X, MainEntity.Position.Y, MainEntity.Position.Z - 0.25f, MainEntity.Position.W);
 
         if (eventArgs.Code == Keyboard.Key.R && DateTime.Now.Subtract(SETTING_CHANGE_LAST_UPDATED).Milliseconds > 100)
 		{
