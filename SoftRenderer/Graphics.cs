@@ -1,10 +1,10 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using System.Numerics;
-using static RendererProbe.Globals;
-using static RendererProbe.MathLib;
+using static SoftRenderer.Globals;
+using static SoftRenderer.MathLib;
 
-namespace RendererProbe;
+namespace SoftRenderer;
 
 public static class Graphics
 {

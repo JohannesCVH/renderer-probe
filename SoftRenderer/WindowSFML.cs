@@ -2,56 +2,36 @@ using System.Numerics;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
-using static RendererProbe.Globals;
+using static SoftRenderer.Globals;
+using static SoftRenderer.Constants;
 
-namespace RendererProbe;
+namespace SoftRenderer;
 
 public class WindowSFML
 {
-    public Entity MainEntity { get; set; }
+    private Entity MainEntity { get; set; }
+	private RenderWindow Window { get; set; }
+	private DateTime PrevTime = DateTime.Now;
+
+
+	private Font _font = new Font(FONT_PATH);
+	private WindowText _fpsTxt { get; set; }
+	private WindowText _fovTxt { get; set; }
+	private WindowText _perspectiveTxt { get; set; }
+	private WindowText _rotateTxt { get; set; }
     
     public void Run()
 	{
 		var videoMode = new VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT);
-		var window = new RenderWindow(videoMode, "Hello Render Probe");
-		window.SetFramerateLimit(30);
-		window.SetVerticalSyncEnabled(true);
-		window.KeyPressed += Window_KeyPressed;
-
-		string fontPath = Path.Combine(
-			AppDomain.CurrentDomain.BaseDirectory,
-			"Fonts/open-sans/OpenSans-Regular.ttf"
-		);
-		Font font = new Font(fontPath);
+		Window = new RenderWindow(videoMode, "Hello Render Probe");
+		Window.SetFramerateLimit(120);
+		Window.SetVerticalSyncEnabled(true);
+		Window.KeyPressed += Window_KeyPressed;
 		
-		//FPS
-		var clock = new Clock();
-		float fps = 0.0f;
-		Text fpsText = new Text()
-		{
-			Font = font,
-            CharacterSize = 18
-		};
-
-        //Various texts
-        Text fovTxt = new Text()
-        {
-            Font = font,
-            CharacterSize = 18,
-            Position = new Vector2f(fpsText.Position.X, fpsText.Position.Y + 16)
-        };
-        Text perspectiveTxt = new Text()
-        {
-            Font = font,
-            CharacterSize = 18,
-            Position = new Vector2f(fovTxt.Position.X, fovTxt.Position.Y + 16)
-        };
-        Text rotateTxt = new Text()
-        {
-            Font = font,
-            CharacterSize = 18,
-            Position = new Vector2f(perspectiveTxt.Position.X, perspectiveTxt.Position.Y + 16)
-        };
+		_fpsTxt = new WindowText(_font, new Vector2f(0, 0));
+		_fovTxt = new WindowText(_font, new Vector2f(0, 16));
+        _perspectiveTxt = new WindowText(_font, new Vector2f(0, 32));
+        _rotateTxt = new WindowText(_font, new Vector2f(0, 48));
 
         //Load Meshes
         string filePathTeapot = Path.Combine(
@@ -71,10 +51,10 @@ public class WindowSFML
 
 		ObjReader teapotReader = new ObjReader(filePathTeapot);
 		Triangle[] teapotMesh = teapotReader.Triangles.ToArray();
-		ObjReader shipReader = new ObjReader(filePathShip);
-		Triangle[] shipMesh = shipReader.Triangles.ToArray();
-		ObjReader cubeReader = new ObjReader(filePathCube);
-		Triangle[] cubeMesh = cubeReader.Triangles.ToArray();
+		// ObjReader shipReader = new ObjReader(filePathShip);
+		// Triangle[] shipMesh = shipReader.Triangles.ToArray();
+		// ObjReader cubeReader = new ObjReader(filePathCube);
+		// Triangle[] cubeMesh = cubeReader.Triangles.ToArray();
 
         //Set camera position
         Camera.CAMERA_X = 0.0f;
@@ -86,43 +66,52 @@ public class WindowSFML
 			new Vector4(0.0f, 0.0f, 12.0f, 1.0f),
 			1.4f,
 			0.0f,
-			shipMesh.Select(x => new Triangle(x)).ToArray()
+			teapotMesh.Select(x => new Triangle(x)).ToArray()
 		);
 		MainEntity.Rotation = 0.5f;
 
-		while (window.IsOpen)
+		while (Window.IsOpen)
 		{
-			//Setup
-			window.DispatchEvents();
-			clock.Restart();
-			window.Clear();
-			
-			//Draw
-			window.Draw(fpsText);
-            window.Draw(fovTxt);
-            window.Draw(perspectiveTxt);
-            window.Draw(rotateTxt);
-            
-            MainEntity.Draw(window);
-			if (ENABLE_ROTATION)
-			{
-				MainEntity.Rotate();
-			}
-            
-			window.Display();
-            
-            //Update entity
-            MainEntity.Update();
-            
-			//Update texts
-			fps = 1.0f / clock.ElapsedTime.AsSeconds();
-			fpsText.DisplayedString = $"FPS: {fps:0.00}";
+			var curTime = DateTime.Now;
+			var deltaTime = curTime - PrevTime;
+			PrevTime = curTime;
 
-            fovTxt.DisplayedString = $"FOV: {WINDOW_FOV}";
-            perspectiveTxt.DisplayedString = $"Perspective: {PERSPECTIVE}";
-            rotateTxt.DisplayedString = $"Rotation: {ENABLE_ROTATION}";
+			Window.DispatchEvents();
+			Window.Clear();
+			
+			Update(deltaTime.Milliseconds);
+			Draw();
 		}
 	}
+
+	private void Update(int ms)
+    {
+        MainEntity.Update();
+
+		if (ENABLE_ROTATION)
+		{
+			MainEntity.Rotate();
+		}
+
+		float fps = 1000.0f / ms;
+		_fpsTxt.DisplayedString = $"FPS: {fps:0}";
+
+		_fovTxt.DisplayedString = $"FOV: {WINDOW_FOV}";
+		_perspectiveTxt.DisplayedString = $"Perspective: {PERSPECTIVE}";
+		_rotateTxt.DisplayedString = $"Rotation: {ENABLE_ROTATION}";
+    }
+
+	private void Draw()
+    {
+		MainEntity.Draw(Window);
+		
+        Window.Draw(_fpsTxt.Text);
+		Window.Draw(_fovTxt.Text);
+		Window.Draw(_perspectiveTxt.Text);
+		Window.Draw(_rotateTxt.Text);
+
+		Window.Display();
+    }
 
     private void Window_KeyPressed(object sender, KeyEventArgs eventArgs)
 	{

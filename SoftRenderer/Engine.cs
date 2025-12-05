@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
-using static RendererProbe.Globals;
+using static SoftRenderer.Globals;
 
-namespace RendererProbe;
+namespace SoftRenderer;
 
 internal static class Engine
 {

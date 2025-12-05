@@ -1,9 +1,9 @@
 ﻿using System.Numerics;
 using SFML.Graphics;
-using static RendererProbe.MathLib;
-using static RendererProbe.Graphics;
+using static SoftRenderer.MathLib;
+using static SoftRenderer.Graphics;
 
-namespace RendererProbe;
+namespace SoftRenderer;
 
 public class Entity
 {

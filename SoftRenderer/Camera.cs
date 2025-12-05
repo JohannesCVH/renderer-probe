@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace RendererProbe;
+namespace SoftRenderer;
 
 internal static class Camera
 {

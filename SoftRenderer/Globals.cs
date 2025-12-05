@@ -1,4 +1,4 @@
-﻿namespace RendererProbe;
+﻿namespace SoftRenderer;
 
 internal static class Globals
 {

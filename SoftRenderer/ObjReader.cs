@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Numerics;
 
-namespace RendererProbe;
+namespace SoftRenderer;
 
 public class ObjReader
 {
