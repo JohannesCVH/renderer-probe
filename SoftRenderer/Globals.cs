@@ -1,4 +1,6 @@
-﻿namespace SoftRenderer;
+﻿using System.Diagnostics;
+
+namespace SoftRenderer;
 
 internal static class Globals
 {
@@ -12,6 +14,9 @@ internal static class Globals
 	public static float Z_FAR = 100.0f;
 	public static bool PERSPECTIVE = true;
 	public const float WORLD_SIZE = 1.0f;
-	public static bool ENABLE_ROTATION = false;
+	public static bool ENABLE_ROTATION = true;
 	public static DateTime SETTING_CHANGE_LAST_UPDATED = DateTime.Now;
+	public static Stopwatch UPDATE_TIMER = new Stopwatch();
+	public static bool IS_RUNNING = true;
+	public static bool DRAW_LINES = true;
 }

@@ -24,7 +24,7 @@ public class WindowSFML
 	{
 		var videoMode = new VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT);
 		Window = new RenderWindow(videoMode, "Hello Render Probe");
-		Window.SetFramerateLimit(120);
+		Window.SetFramerateLimit(20);
 		Window.SetVerticalSyncEnabled(true);
 		Window.KeyPressed += Window_KeyPressed;
 		
@@ -68,40 +68,45 @@ public class WindowSFML
 			0.0f,
 			teapotMesh.Select(x => new Triangle(x)).ToArray()
 		);
-		MainEntity.Rotation = 0.5f;
+		MainEntity.Rotation = 0.25f;
+
+
+		UPDATE_TIMER.Start();
+		Task.Run(() =>
+        {
+			while (IS_RUNNING)
+            {
+                Update();
+
+				if (UPDATE_TIMER.ElapsedMilliseconds >= UPDATE_INTERVAL)
+					UPDATE_TIMER.Restart();
+            }
+        });
 
 		while (Window.IsOpen)
 		{
 			var curTime = DateTime.Now;
 			var deltaTime = curTime - PrevTime;
 			PrevTime = curTime;
-
+			
 			Window.DispatchEvents();
 			Window.Clear();
-			
-			Update(deltaTime.Milliseconds);
-			Draw();
+
+			Draw(deltaTime.Milliseconds);
 		}
 	}
 
-	private void Update(int ms)
-    {
+	private void Update()
+    {	
         MainEntity.Update();
 
 		if (ENABLE_ROTATION)
 		{
 			MainEntity.Rotate();
 		}
-
-		float fps = 1000.0f / ms;
-		_fpsTxt.DisplayedString = $"FPS: {fps:0}";
-
-		_fovTxt.DisplayedString = $"FOV: {WINDOW_FOV}";
-		_perspectiveTxt.DisplayedString = $"Perspective: {PERSPECTIVE}";
-		_rotateTxt.DisplayedString = $"Rotation: {ENABLE_ROTATION}";
     }
 
-	private void Draw()
+	private void Draw(int dt)
     {
 		MainEntity.Draw(Window);
 		
@@ -110,6 +115,13 @@ public class WindowSFML
 		Window.Draw(_perspectiveTxt.Text);
 		Window.Draw(_rotateTxt.Text);
 
+		float fps = 1000.0f / dt;
+		_fpsTxt.DisplayedString = $"FPS: {fps:0}";
+
+		_fovTxt.DisplayedString = $"FOV: {WINDOW_FOV}";
+		_perspectiveTxt.DisplayedString = $"Perspective: {PERSPECTIVE}";
+		_rotateTxt.DisplayedString = $"Rotation: {ENABLE_ROTATION}";
+
 		Window.Display();
     }
 
@@ -117,7 +129,10 @@ public class WindowSFML
 	{
 		var window = (Window)sender;
 		if (eventArgs.Code == Keyboard.Key.Escape)
-			window.Close();
+        {
+			IS_RUNNING = false;
+            window.Close();
+        }
 
         if (eventArgs.Code == Keyboard.Key.Add)
             WINDOW_FOV += 2;
@@ -126,6 +141,9 @@ public class WindowSFML
 
         if (eventArgs.Code == Keyboard.Key.P)
             PERSPECTIVE = PERSPECTIVE ? false : true;
+
+		if (eventArgs.Code == Keyboard.Key.L)
+            DRAW_LINES = DRAW_LINES ? false : true;
 
         if (eventArgs.Code == Keyboard.Key.Up)
             MainEntity.Position = new Vector4(MainEntity.Position.X, MainEntity.Position.Y, MainEntity.Position.Z + 0.25f, MainEntity.Position.W);

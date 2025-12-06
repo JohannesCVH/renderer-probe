@@ -177,19 +177,22 @@ public struct Mesh
 
 			window.Draw(vaTri);
 
-			VertexArray vaTriLines1 = new VertexArray(PrimitiveType.Lines, 2);
-			vaTriLines1.Append(new Vertex(new Vector2f(x.Value.Vertices[0].X, x.Value.Vertices[0].Y), Color.Black));
-			vaTriLines1.Append(new Vertex(new Vector2f(x.Value.Vertices[1].X, x.Value.Vertices[1].Y), Color.Black));
-			VertexArray vaTriLines2 = new VertexArray(PrimitiveType.Lines, 2);
-			vaTriLines2.Append(new Vertex(new Vector2f(x.Value.Vertices[1].X, x.Value.Vertices[1].Y), Color.Black));
-			vaTriLines2.Append(new Vertex(new Vector2f(x.Value.Vertices[2].X, x.Value.Vertices[2].Y), Color.Black));
-			VertexArray vaTriLines3 = new VertexArray(PrimitiveType.Lines, 2);
-			vaTriLines3.Append(new Vertex(new Vector2f(x.Value.Vertices[2].X, x.Value.Vertices[2].Y), Color.Black));
-			vaTriLines3.Append(new Vertex(new Vector2f(x.Value.Vertices[0].X, x.Value.Vertices[0].Y), Color.Black));
-			
-			window.Draw(vaTriLines1);
-			window.Draw(vaTriLines2);
-			window.Draw(vaTriLines3);
+			if (DRAW_LINES)
+            {
+                VertexArray vaTriLines1 = new VertexArray(PrimitiveType.Lines, 2);
+				vaTriLines1.Append(new Vertex(new Vector2f(x.Value.Vertices[0].X, x.Value.Vertices[0].Y), Color.Black));
+				vaTriLines1.Append(new Vertex(new Vector2f(x.Value.Vertices[1].X, x.Value.Vertices[1].Y), Color.Black));
+				VertexArray vaTriLines2 = new VertexArray(PrimitiveType.Lines, 2);
+				vaTriLines2.Append(new Vertex(new Vector2f(x.Value.Vertices[1].X, x.Value.Vertices[1].Y), Color.Black));
+				vaTriLines2.Append(new Vertex(new Vector2f(x.Value.Vertices[2].X, x.Value.Vertices[2].Y), Color.Black));
+				VertexArray vaTriLines3 = new VertexArray(PrimitiveType.Lines, 2);
+				vaTriLines3.Append(new Vertex(new Vector2f(x.Value.Vertices[2].X, x.Value.Vertices[2].Y), Color.Black));
+				vaTriLines3.Append(new Vertex(new Vector2f(x.Value.Vertices[0].X, x.Value.Vertices[0].Y), Color.Black));
+				
+				window.Draw(vaTriLines1);
+				window.Draw(vaTriLines2);
+				window.Draw(vaTriLines3);
+            }
 		});
 		Array.Fill(TrianglesOrdered, null);
 	}

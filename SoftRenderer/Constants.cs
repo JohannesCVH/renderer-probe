@@ -6,4 +6,6 @@ public static class Constants
         AppDomain.CurrentDomain.BaseDirectory,
         "Fonts/open-sans/OpenSans-Regular.ttf"
     );
+
+    public const int UPDATE_INTERVAL = 10;
 }

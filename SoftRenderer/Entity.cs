@@ -2,6 +2,8 @@
 using SFML.Graphics;
 using static SoftRenderer.MathLib;
 using static SoftRenderer.Graphics;
+using static SoftRenderer.Globals;
+using static SoftRenderer.Constants;
 
 namespace SoftRenderer;
 
@@ -61,6 +63,9 @@ public class Entity
 
 	public void Rotate(float? angle = null)
 	{   
+		if (UPDATE_TIMER.ElapsedMilliseconds < UPDATE_INTERVAL)
+			return;
+
 		Angle += angle ?? Rotation;
 	}
 
